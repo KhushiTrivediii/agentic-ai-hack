@@ -3,6 +3,7 @@ import { ListTodo, CheckCircle2, Send, ExternalLink, Calendar, Kanban, ListFilte
 import confetti from 'canvas-confetti';
 import { ActionItem, Speaker } from '../types';
 import { sfx } from '../utils/audio';
+import { LinearIssueModal } from './LinearIssueModal';
 
 interface ExecutionStagingProps {
   actionItems: ActionItem[];
@@ -21,6 +22,7 @@ export const ExecutionStaging: React.FC<ExecutionStagingProps> = ({
   );
   const [activeTab, setActiveTab] = useState<'pending' | 'synced' | 'all'>('pending');
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('list');
+  const [inspectingIssue, setInspectingIssue] = useState<ActionItem | null>(null);
 
   const getSpeaker = (id: string) => speakers.find((s) => s.id === id) || speakers[0];
 
@@ -265,7 +267,11 @@ export const ExecutionStaging: React.FC<ExecutionStagingProps> = ({
                   return (
                     <div
                       key={task.id}
-                      className="p-4 rounded-2xl bg-slate-950/60 border border-white/[0.04] space-y-2"
+                      onClick={() => {
+                        sfx.playClick();
+                        setInspectingIssue(task);
+                      }}
+                      className="p-4 rounded-2xl bg-slate-950/60 border border-white/[0.04] space-y-2 hover:border-emerald-500/40 cursor-pointer transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-[9px] font-mono font-bold text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1">
@@ -286,7 +292,7 @@ export const ExecutionStaging: React.FC<ExecutionStagingProps> = ({
                           />
                           <span className="text-[11px] text-slate-300">{assignee.name.split(' ')[0]}</span>
                         </div>
-                        <span className="text-[10px] text-emerald-400 font-semibold">Synced</span>
+                        <span className="text-[10px] text-emerald-400 font-semibold">Click to Inspect</span>
                       </div>
                     </div>
                   );
@@ -354,10 +360,16 @@ export const ExecutionStaging: React.FC<ExecutionStagingProps> = ({
                           </span>
 
                           {isSynced && task.trackerTicketKey && (
-                            <span className="text-[10px] font-mono text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1 font-bold">
+                            <button
+                              onClick={() => {
+                                sfx.playClick();
+                                setInspectingIssue(task);
+                              }}
+                              className="text-[10px] font-mono text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1 font-bold hover:bg-emerald-500/20 cursor-pointer"
+                            >
                               <span>{task.trackerTicketKey}</span>
                               <ExternalLink className="w-2.5 h-2.5" />
-                            </span>
+                            </button>
                           )}
                         </div>
 
@@ -411,6 +423,13 @@ export const ExecutionStaging: React.FC<ExecutionStagingProps> = ({
           )}
         </div>
       )}
+
+      {/* Simulated Linear Issue Inspector Modal */}
+      <LinearIssueModal
+        issue={inspectingIssue}
+        assignee={inspectingIssue ? getSpeaker(inspectingIssue.assigneeId) : null}
+        onClose={() => setInspectingIssue(null)}
+      />
     </div>
   );
 };

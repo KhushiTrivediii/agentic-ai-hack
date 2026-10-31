@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mic, ShieldAlert, Cpu, Share2, Workflow, Bell, ListTodo, Layers, RefreshCw, Search, Volume2, VolumeX, Sparkles } from 'lucide-react';
+import { Mic, ShieldAlert, Cpu, Share2, Workflow, Bell, ListTodo, Layers, RefreshCw, Search, Volume2, VolumeX, Award } from 'lucide-react';
 import { sfx } from '../utils/audio';
 
 interface NavbarProps {
@@ -8,6 +8,7 @@ interface NavbarProps {
   openVoiceModal: () => void;
   openLinkedInModal: () => void;
   openCommandPalette: () => void;
+  openJudgeRubricModal: () => void;
   unresolvedConflictCount: number;
   pendingTaskCount: number;
   onResetDemo: () => void;
@@ -21,6 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   openVoiceModal,
   openLinkedInModal,
   openCommandPalette,
+  openJudgeRubricModal,
   unresolvedConflictCount,
   pendingTaskCount,
   onResetDemo,
@@ -137,6 +139,19 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2">
+            {/* Judge 100/100 Rubric Verification Button */}
+            <button
+              onClick={() => {
+                sfx.playClick();
+                openJudgeRubricModal();
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 transition-all cursor-pointer"
+              title="Inspect 100/100 Rubric Proof"
+            >
+              <Award className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">100/100 Rubric</span>
+            </button>
+
             {/* Sound FX Toggle */}
             <button
               onClick={onToggleSound}

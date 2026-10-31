@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ShieldAlert, ArrowRight, CheckCircle2, History, Scale, Sparkles, RotateCcw, AlertTriangle, ShieldCheck, Check } from 'lucide-react';
 import { Conflict } from '../types';
 import { sfx } from '../utils/audio';
+import { ConflictDiffSlider } from './ConflictDiffSlider';
 
 interface ConflictAlertCenterProps {
   conflicts: Conflict[];
@@ -167,42 +168,8 @@ export const ConflictAlertCenter: React.FC<ConflictAlertCenterProps> = ({
                 </div>
               </div>
 
-              {/* Side-by-side Historical vs Current comparison */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Historical Baseline */}
-                <div className="p-4 rounded-2xl bg-slate-950/70 border border-white/[0.06] space-y-2.5">
-                  <div className="flex items-center justify-between text-xs font-bold text-indigo-300">
-                    <span className="flex items-center gap-1.5">
-                      <History className="w-4 h-4 text-indigo-400" />
-                      <span>Historical Baseline (Sprint 14)</span>
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-500">{activeConflict.conflictingMeetingDate}</span>
-                  </div>
-                  <p className="text-[11px] text-slate-400">
-                    Locked in <strong className="text-slate-200">{activeConflict.conflictingMeetingTitle}</strong>
-                  </p>
-                  <div className="p-3.5 rounded-xl bg-slate-900 border border-white/[0.04] text-xs text-slate-200 leading-relaxed font-mono">
-                    "{activeConflict.conflictingHistoricalStatement}"
-                  </div>
-                </div>
-
-                {/* Current Proposed Statement */}
-                <div className="p-4 rounded-2xl bg-rose-950/20 border border-rose-500/30 space-y-2.5">
-                  <div className="flex items-center justify-between text-xs font-bold text-rose-300">
-                    <span className="flex items-center gap-1.5">
-                      <AlertTriangle className="w-4 h-4 text-rose-400" />
-                      <span>Today's Proposed Statement</span>
-                    </span>
-                    <span className="text-[10px] font-mono text-rose-400">Sprint 16</span>
-                  </div>
-                  <p className="text-[11px] text-slate-400">
-                    Captured from current Sprint 16 discussion / voice debrief
-                  </p>
-                  <div className="p-3.5 rounded-xl bg-slate-900 border border-rose-500/30 text-xs text-slate-200 leading-relaxed font-mono">
-                    "{activeConflict.currentStatement}"
-                  </div>
-                </div>
-              </div>
+              {/* Interactive Semantic Diff Slider */}
+              <ConflictDiffSlider conflict={activeConflict} />
 
               {/* AI Semantic Rationale & Risk Assessment */}
               <div className="p-4 rounded-2xl bg-slate-950/80 border border-white/[0.06] space-y-1.5">

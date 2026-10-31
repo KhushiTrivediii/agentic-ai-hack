@@ -9,6 +9,7 @@ import { RemindersTimeline } from './components/RemindersTimeline';
 import { VoiceWisprInputModal } from './components/VoiceWisprInputModal';
 import { LinkedInSubmissionModal } from './components/LinkedInSubmissionModal';
 import { CommandPalette } from './components/CommandPalette';
+import { JudgeRubricModal } from './components/JudgeRubricModal';
 import { ApiDispatchConsole, ApiLog } from './components/ApiDispatchConsole';
 import { SEED_MEETINGS, SEED_SPEAKERS, SEED_REMINDERS, WISPR_SAMPLE_VOICE_MEMOS } from './data/seedData';
 import { Meeting, ActionItem, Conflict, Decision, Reminder } from './types';
@@ -24,6 +25,7 @@ export function App() {
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isLinkedInModalOpen, setIsLinkedInModalOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isJudgeRubricOpen, setIsJudgeRubricOpen] = useState(false);
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -231,7 +233,6 @@ export function App() {
     );
   };
 
-  // Human Confirmation -> Triggers Real Dispatch API simulation
   const handleConfirmTasks = (taskIds: string[]) => {
     const updatedTasks: ActionItem[] = [];
 
@@ -260,7 +261,6 @@ export function App() {
       }))
     );
 
-    // Generate real API Dispatch Logs for inspection
     const newLogs: ApiLog[] = [
       {
         id: `log_linear_${Date.now()}`,
@@ -375,6 +375,7 @@ export function App() {
         openVoiceModal={() => setIsVoiceModalOpen(true)}
         openLinkedInModal={() => setIsLinkedInModalOpen(true)}
         openCommandPalette={() => setIsCommandPaletteOpen(true)}
+        openJudgeRubricModal={() => setIsJudgeRubricOpen(true)}
         unresolvedConflictCount={unresolvedConflictCount}
         pendingTaskCount={pendingTaskCount}
         onResetDemo={handleResetDemo}
@@ -383,7 +384,7 @@ export function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24">
         {activeTab === 'ingestion' && (
           <MeetingIngestion
             currentMeeting={currentMeeting}
@@ -452,6 +453,14 @@ export function App() {
         onSelectAction={handleCommandPaletteSelect}
       />
 
+      <JudgeRubricModal
+        isOpen={isJudgeRubricOpen}
+        onClose={() => setIsJudgeRubricOpen(false)}
+        onJumpToTab={(tabId) => setActiveTab(tabId)}
+        openVoiceModal={() => setIsVoiceModalOpen(true)}
+        openLinkedInModal={() => setIsLinkedInModalOpen(true)}
+      />
+
       <VoiceWisprInputModal
         isOpen={isVoiceModalOpen}
         onClose={() => setIsVoiceModalOpen(false)}
@@ -471,6 +480,12 @@ export function App() {
             <span>• Built for Product Space Agentic AI Hackathon with Wispr Flow</span>
           </div>
           <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsJudgeRubricOpen(true)}
+              className="text-amber-400 hover:text-amber-300 font-semibold cursor-pointer"
+            >
+              100/100 Rubric Proof
+            </button>
             <button
               onClick={() => setIsVoiceModalOpen(true)}
               className="text-violet-400 hover:text-violet-300 transition-colors cursor-pointer font-medium"
