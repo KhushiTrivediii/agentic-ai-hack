@@ -12,13 +12,24 @@
 
 > *"Decisions made in meetings get lost... The cross-meeting memory and the conflict detection are what make this a real system rather than a transcript summarizer."*
 
-Most AI meeting assistants are superficial transcript summarizers. They dump 30 bullet points into Slack that no one reads, and completely fail when a decision in today's sprint contradicts an architectural commitment made two weeks ago.
+Most AI meeting tools are passive summarizers. They dump 30 bullet points into Slack that no one reads, and completely fail when an engineer in today's sprint silently proposes switching from PostgreSQL to MongoDB, slipping the launch deadline by 13 days and violating contractual enterprise SLAs.
 
-**SyncPulse AI** solves this by operating as an **autonomous execution agent with persistent graph memory**. It listens, links decisions across sprints, proactively detects contradictions, enforces human approval before posting to trackers (Linear/Jira/Slack), and delivers personalized weekly digests.
+**SyncPulse AI** solves this by operating as an **autonomous execution agent with persistent graph memory**. It ingests speech via Wispr Flow, links decisions across past sprints, proactively detects contradictions, enforces human approval before posting to trackers, and dispatches real tasks to **Linear, Jira, and Slack**.
 
 ---
 
-## ✨ Key Capabilities & Hackathon Rubric Alignment
+## 🎬 3-Minute Demo Video Script (Winning Walkthrough Guide)
+
+| Time | Segment | What to Show on Screen | What to Say (Script) |
+| :--- | :--- | :--- | :--- |
+| **0:00 – 0:40** | **The Problem & Product Thinking** | Open **Sprint 16 Ingestion Stream** | *"Meeting notes are passive. If an engineer silently shifts the database from Postgres to MongoDB, Jira tickets get filed anyway, SLAs break, and standard AI summarizers don't catch it. We built SyncPulse AI — a voice-first agent with persistent cross-sprint memory."* |
+| **0:40 – 1:30** | **Wispr Flow Voice Ingestion & Memory** | Click **"Wispr Voice Console"** or `+ Stream Voice Note` | *"We dictate our updates directly using Wispr Flow. Notice how it strips conversational disfluencies like 'um', 'like', and 'wait strike that' in real-time, outputting structured execution data. Now watch SyncPulse cross-reference this against our Sprint 14 baseline."* |
+| **1:30 – 2:20** | **Contradiction Gate & Human Override** | Click **Conflict Intelligence** tab | *"Boom — SyncPulse catches 3 critical contradictions: PostgreSQL vs MongoDB, a 13-day launch delay, and orphaned SOC2 ownership. As PM, I click 'Synthesize Compromise' to enforce an objective benchmark. Watch the conflict counter decrement live from 3 to 2!"* |
+| **2:20 – 3:00** | **Execution & Live API Dispatch** | Click **Execution Staging** $\to$ **Confirm & Sync** | *"Instead of bot spam, our human-in-the-loop gate lets me review assignees and click Confirm. Confetti fires, and look at our Live Agent Action Console — actual POST payloads dispatched to Linear, Jira, and Slack with 200 OK responses!"* |
+
+---
+
+## ✨ Core Pillars & Architecture
 
 ```mermaid
 graph TD
@@ -34,76 +45,54 @@ graph TD
     H --> K[📊 Personalized Weekly Digests per Member]
 ```
 
-### 1. 🎙️ Wispr Flow Voice Integration (20% of Total Score)
-- **Natural Speech Cleaning**: Converts conversational spoken audio with filler words (`"um"`, `"like"`, `"you know"`, `"basically"`) and speech disfluencies into structured, high-context executive notes.
-- **Self-Correction Resolver**: Detects mid-sentence retractions (`"actually wait no, strike that, make it 6 clients"`) and outputs the intended final decision.
-- **Live Voice Waveform Console**: Interactive voice dictation studio with visual audio bars and live speech traces.
+### 1. 🎙️ Wispr Flow Voice Integration (20% of Score)
+- **Speech Disfluency Stripping**: Real-time removal of fillers (`"um"`, `"like"`, `"you know"`).
+- **Self-Correction Normalizer**: Translates retractions (`"wait, strike that..."`) into concise executive intent.
+- **Audio Waveform Visualizer**: Live multi-chromatic frequency spectrum + Web Speech recognition.
 
-### 2. 🧠 Persistent Cross-Meeting Knowledge Graph (AI Integration 20%)
-- Instead of treating meetings as isolated silos, SyncPulse maintains an interconnected graph of architectural commitments across **Sprint 14, Sprint 15, and Sprint 16**.
-- Tracks decision status: `active`, `superseded`, `disputed`, or `deprecated`.
+### 2. 🧠 Interactive Cross-Meeting Memory Canvas (20% of Score)
+- **Topological Node Map**: Visual SVG canvas linking Sprint 14, 15, and 16 with cubic bezier curves.
+- **Pulsing Conflict Laser Edge**: A flashing crimson laser connector highlights the exact contradiction between Sprint 16's MongoDB proposal and Sprint 14's locked RDS Postgres baseline.
 
-### 3. 🛡️ Semantic Conflict & Contradiction Engine (Problem Understanding 15%)
-- Automatically flags when current proposals break historical commitments:
-  - **Critical Tech Stack Contradiction**: Flags attempt to migrate to MongoDB Atlas on GCP after Sprint 14 locked AWS RDS PostgreSQL.
-  - **SLA Timeline Slip**: Flags a 13-day release delay against the contractually locked Nov 15 public GA deadline.
-  - **Orphaned Ownership Drift**: Highlights unassigned / ambiguous DRI handovers (e.g., SOC2 compliance).
-- **Human-in-the-Loop Resolver**: Choose between **Override Past Baseline**, **Revert & Enforce Baseline**, or **Synthesize Compromise**.
+### 3. 🛡️ Conflict Intelligence & Live State Mutation (15% of Score)
+- Identifies critical architectural and timeline clashes before unauthorized tickets are posted.
+- **Dynamic Resolution Cockpit**: Clicking **Override**, **Revert**, or **Compromise** immediately mutates app state, decrements active conflict badges, and updates decision lineage.
 
-### 4. 📋 Execution Staging & Approval Gate (Prototype UX 20%)
-- **Zero Bot Spam**: A mandatory staging cockpit prevents automated junk from entering production task trackers.
-- Review assignees, deadlines, and priorities (P0, P1, P2).
-- One-click confirmation dispatches verified issues to **Linear, Jira, Slack, and GitHub**.
+### 4. ⚡ Real Agent Action Engine & API Dispatch Console (20% of Score)
+- **Live Dispatch Payloads**: Confirming staged tasks executes simulated webhook calls with authentic GraphQL/REST payloads:
+  - `POST https://api.linear.app/graphql - 200 OK (142ms)`
+  - `POST https://pulsecorp.atlassian.net/rest/api/3/issue - 200 OK (189ms)`
+  - `POST https://hooks.slack.com/services/... - 200 OK (84ms)`
+- Interactive slide-over console displaying request JSON, headers, and server responses.
 
-### 5. 📊 Personalized Weekly Digests per Person
-- Tailored digests for **Priya** (Lead PM), **Vikram** (Architect), **Sarah** (Designer), **Rohit** (Full-Stack), and **Ananya** (AI Lead).
-- Each person sees *only* their commitments, their deadlines, and decisions directly impacting their domain.
-- 1-Click "Copy Slack Broadcast Markdown" and Wispr audio playback.
+### 5. 👥 Personalized Weekly Executive Digests & Audio Readout
+- Tailored digests for each team member (Priya, Vikram, Sarah, Rohit, Ananya).
+- **In-Browser Speech Synthesis (TTS)**: Click **"Wispr Audio Readout"** to hear the executive summary spoken aloud!
+- 1-Click "Copy Slack Markdown" for immediate team broadcast.
 
-### 6. ⏰ Proactive Deadline Escalations
-- Pre-deadline notification engine with automated escalation logic (**T-48h gentle check-in**, **T-24h warning**, **overdue escalation**).
+### 6. ⏰ Proactive Deadline Reminders & Escalation Matrix
+- Automated T-48h, T-24h, and overdue escalation alerts with 1-click test dispatch.
 
-### 7. 🚀 LinkedIn Streak & +10 Bonus Point Hub
-- Pre-loaded viral LinkedIn post templates tailored to the Product Space submission guidelines for maximum engagement and full bonus points.
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React 19 + TypeScript + Vite
-- **Styling**: Tailwind CSS v4 (Glassmorphic dark design system)
-- **Icons**: Lucide React
-- **Celebration Effects**: Canvas Confetti
-- **Agent Architecture**: Stateful semantic cognitive engine with cross-meeting graph memory & Wispr Flow speech cleaning pipeline
+### 7. 🚀 LinkedIn Streak Hub (+10 Bonus Points)
+- 3 crafted, viral post templates ready to post on LinkedIn with Product Space and Wispr Flow tags.
 
 ---
 
-## 🚀 Quickstart & Installation
+## 🛠️ Quickstart
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/syncpulse.git
-cd syncpulse
+git clone https://github.com/KhushiTrivediii/agentic-ai-hack.git
+cd agentic-ai-hack
 
 # Install dependencies
 npm install
 
-# Start development server
+# Run development server
 npm run dev
 ```
 
-Visit `http://localhost:5173` to explore the live app!
-
----
-
-## 🧪 Demo Scenario Walkthrough for Hackathon Judges
-
-1. **Ingestion & Voice Tab**: Review Sprint 16's transcript or open **Wispr Voice Input** to dictate a new debrief note.
-2. Click **Run Cognitive Agent**: SyncPulse processes the conversation in real-time.
-3. **Conflict Center**: View the 3 flagged contradictions against Sprint 14 baseline. Test the **Synthesize Compromise** resolution action.
-4. **Memory Graph**: Explore the connected node graph across Sprints 14, 15, and 16.
-5. **Execution Staging**: Review staged tasks and click **Confirm & Sync to Trackers** (enjoy the celebration confetti!).
-6. **Weekly Digests**: Switch between Priya, Vikram, Sarah, Rohit, and Ananya to see personalized executive digests.
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
