@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { MeetingIngestion } from './components/MeetingIngestion';
 import { CrossMeetingMemoryGraph } from './components/CrossMeetingMemoryGraph';
@@ -8,30 +8,63 @@ import { WeeklyDigestView } from './components/WeeklyDigestView';
 import { RemindersTimeline } from './components/RemindersTimeline';
 import { VoiceWisprInputModal } from './components/VoiceWisprInputModal';
 import { LinkedInSubmissionModal } from './components/LinkedInSubmissionModal';
+import { CommandPalette } from './components/CommandPalette';
 import { SEED_MEETINGS, SEED_SPEAKERS, SEED_REMINDERS } from './data/seedData';
 import { Meeting, ActionItem, Conflict, Decision, Reminder } from './types';
 import { AiAgentService } from './services/aiAgent';
+import { sfx } from './utils/audio';
 
 export function App() {
   const [meetings, setMeetings] = useState<Meeting[]>(SEED_MEETINGS);
-  const [currentMeetingId, setCurrentMeetingId] = useState<string>('meet_sprint_16');
+  const [currentMeetingId] = useState<string>('meet_sprint_16');
   const [speakers] = useState(SEED_SPEAKERS);
   const [reminders, setReminders] = useState<Reminder[]>(SEED_REMINDERS);
   const [activeTab, setActiveTab] = useState<string>('ingestion');
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isLinkedInModalOpen, setIsLinkedInModalOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  // Derived current meeting
+  // Global hotkeys
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger when typing in inputs/textareas
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
+
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+        return;
+      }
+
+      if (e.key === 'v' || e.key === 'V') {
+        e.preventDefault();
+        setIsVoiceModalOpen(true);
+      } else if (e.key === 'c' || e.key === 'C') {
+        setActiveTab('conflicts');
+      } else if (e.key === 'm' || e.key === 'M') {
+        setActiveTab('memory');
+      } else if (e.key === 's' || e.key === 'S') {
+        setActiveTab('staging');
+      } else if (e.key === 'd' || e.key === 'D') {
+        setActiveTab('digest');
+      } else if (e.key === 'r' || e.key === 'R') {
+        setActiveTab('reminders');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const currentMeeting = meetings.find((m) => m.id === currentMeetingId) || meetings[2];
 
-  // Flatten all action items
   const allActionItems: ActionItem[] = [];
   meetings.forEach((m) => {
     m.extractedActionItems.forEach((a) => allActionItems.push(a));
   });
 
-  // Flatten all conflicts
   const allConflicts: Conflict[] = [];
   meetings.forEach((m) => {
     m.detectedConflicts.forEach((c) => allConflicts.push(c));
@@ -40,7 +73,6 @@ export function App() {
   const unresolvedConflictCount = allConflicts.filter((c) => c.resolutionState === 'unresolved').length;
   const pendingTaskCount = allActionItems.filter((a) => a.status === 'pending_confirmation').length;
 
-  // Handler: Analyze Meeting with Cognitive Agent
   const handleAnalyzeMeeting = (transcript: string, title: string) => {
     setIsAnalyzing(true);
     setTimeout(() => {
@@ -76,6 +108,7 @@ export function App() {
       );
 
       setIsAnalyzing(false);
+      sfx.playSuccess();
       if (detectedConflicts.length > 0) {
         setActiveTab('conflicts');
       } else {
@@ -84,7 +117,6 @@ export function App() {
     }, 900);
   };
 
-  // Handler: Ingest Voice Note via Wispr Flow
   const handleIngestVoiceNote = (cleanedText: string, rawText: string) => {
     const newDecision: Decision = {
       id: `dec_voice_${Date.now()}`,
@@ -113,7 +145,6 @@ export function App() {
       tags: ['voice-dictated', 'wispr-flow', 'priority-p0'],
     };
 
-    // Update meeting with new items
     setMeetings((prev) =>
       prev.map((m) =>
         m.id === currentMeeting.id
@@ -130,7 +161,6 @@ export function App() {
     setActiveTab('staging');
   };
 
-  // Handler: Resolve Conflict
   const handleResolveConflict = (
     conflictId: string,
     resolutionState: Conflict['resolutionState'],
@@ -155,7 +185,6 @@ export function App() {
     );
   };
 
-  // Handler: Confirm Staged Tasks & Sync to Trackers
   const handleConfirmTasks = (taskIds: string[]) => {
     setMeetings((prev) =>
       prev.map((m) => ({
@@ -178,28 +207,32 @@ export function App() {
     );
   };
 
-  // Handler: Update individual task
-  const handleUpdateTask = (task: ActionItem) => {
-    setMeetings((prev) =>
-      prev.map((m) => ({
-        ...m,
-        extractedActionItems: m.extractedActionItems.map((a) => (a.id === task.id ? task : a)),
-      }))
-    );
-  };
-
-  // Handler: Dispatch / Trigger Reminder
   const handleTriggerReminder = (reminderId: string) => {
     setReminders((prev) =>
       prev.map((r) => (r.id === reminderId ? { ...r, status: 'sent' } : r))
     );
   };
 
-  // Reset Demo to fresh state
   const handleResetDemo = () => {
     setMeetings(SEED_MEETINGS);
     setReminders(SEED_REMINDERS);
     setActiveTab('ingestion');
+  };
+
+  const handleCommandPaletteSelect = (actionId: string) => {
+    if (actionId === 'voice_modal') {
+      setIsVoiceModalOpen(true);
+    } else if (actionId === 'linkedin_modal') {
+      setIsLinkedInModalOpen(true);
+    } else if (actionId.startsWith('tab_')) {
+      setActiveTab(actionId.replace('tab_', ''));
+    }
+  };
+
+  const handleToggleSound = () => {
+    const newState = sfx.toggleSound();
+    setIsSoundEnabled(newState);
+    if (newState) sfx.playClick();
   };
 
   return (
@@ -210,9 +243,12 @@ export function App() {
         setActiveTab={setActiveTab}
         openVoiceModal={() => setIsVoiceModalOpen(true)}
         openLinkedInModal={() => setIsLinkedInModalOpen(true)}
+        openCommandPalette={() => setIsCommandPaletteOpen(true)}
         unresolvedConflictCount={unresolvedConflictCount}
         pendingTaskCount={pendingTaskCount}
         onResetDemo={handleResetDemo}
+        isSoundEnabled={isSoundEnabled}
+        onToggleSound={handleToggleSound}
       />
 
       {/* Main Container */}
@@ -250,7 +286,6 @@ export function App() {
             actionItems={allActionItems}
             speakers={speakers}
             onConfirmTasks={handleConfirmTasks}
-            onUpdateTask={handleUpdateTask}
           />
         )}
 
@@ -270,7 +305,13 @@ export function App() {
         )}
       </main>
 
-      {/* Modals */}
+      {/* Modals & Command Palette */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onSelectAction={handleCommandPaletteSelect}
+      />
+
       <VoiceWisprInputModal
         isOpen={isVoiceModalOpen}
         onClose={() => setIsVoiceModalOpen(false)}
@@ -283,22 +324,22 @@ export function App() {
       />
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-6 text-xs text-slate-500">
+      <footer className="border-t border-white/[0.08] bg-slate-950/80 py-6 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-300">SyncPulse AI</span>
+            <span className="font-extrabold text-slate-300">SyncPulse AI</span>
             <span>• Built for Product Space Agentic AI Hackathon with Wispr Flow</span>
           </div>
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsVoiceModalOpen(true)}
-              className="text-violet-400 hover:text-violet-300 transition-colors"
+              className="text-violet-400 hover:text-violet-300 transition-colors cursor-pointer font-medium"
             >
               Wispr Voice Studio
             </button>
             <button
               onClick={() => setIsLinkedInModalOpen(true)}
-              className="text-sky-400 hover:text-sky-300 transition-colors"
+              className="text-sky-400 hover:text-sky-300 transition-colors cursor-pointer font-medium"
             >
               LinkedIn Bonus Templates (+10)
             </button>
