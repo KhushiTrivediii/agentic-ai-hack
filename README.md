@@ -5,6 +5,22 @@
 [![Problem Statement](https://img.shields.io/badge/Problem%20Statement-03%20Meeting--to--Execution-indigo.svg)](https://theproductspace.in/ai-hackathon-details/problem-statement)
 [![Wispr Flow Voice](https://img.shields.io/badge/Built%20with-Wispr%20Flow%20(20%25%20Score)-violet.svg)](https://ref.wisprflow.ai/productspace)
 [![Score Rubric](https://img.shields.io/badge/Scoring%20Target-100%2F100%20%2B%2010%20Bonus-emerald.svg)](#hackathon-scoring-breakdown)
+[![3-Min Demo Video](https://img.shields.io/badge/Walkthrough%20Video-9.3MB%20HD%20Demo-rose.svg)](./SyncPulse_3Min_Demo_Walkthrough.webm)
+
+---
+
+## 🎬 3-Minute Walkthrough Video (Generated & Included)
+
+🎥 **Direct Video File**: [Download / Watch SyncPulse_3Min_Demo_Walkthrough.webm](./SyncPulse_3Min_Demo_Walkthrough.webm) (9.29 MB, 720p HD)
+
+### Video Walkthrough Structure (Follows Hackathon Evaluation Criteria):
+
+| Timestamp | Phase | What the Video Demonstrates |
+| :--- | :--- | :--- |
+| **0:00 – 0:40** | **Product Thinking & Problem** | Explains why conventional AI meeting assistants fail when an engineer silently changes from PostgreSQL to MongoDB on GCP, slipping release SLAs by 13 days. |
+| **0:40 – 1:30** | **Wispr Flow Voice Ingestion** | Demonstrates the Wispr Voice Console with real-time waveform, continuous disfluency stripping (`"um"`, `"like"`, `"wait strike that"`), and live speech efficiency metrics (+87% faster). |
+| **1:30 – 2:20** | **Memory Graph & Contradiction Resolution** | Explores the topological SVG memory canvas across Sprint 14, 15, and 16. Resolves the critical contradiction via **"Synthesize Compromise"**, proving live state mutation as the conflict badge decrements from 3 to 2. |
+| **2:20 – 3:00** | **Execution Staging & Live API Dispatch** | Reviews staged tasks in Linear Kanban view, triggers **Confirm & Sync** (confetti fires), inspects the **Linear Issue Modal**, and displays authentic GraphQL/REST payloads in the **Live Agent Action Console**. |
 
 ---
 
@@ -15,17 +31,6 @@
 Most AI meeting tools are passive summarizers. They dump 30 bullet points into Slack that no one reads, and completely fail when an engineer in today's sprint silently proposes switching from PostgreSQL to MongoDB, slipping the launch deadline by 13 days and violating contractual enterprise SLAs.
 
 **SyncPulse AI** solves this by operating as an **autonomous execution agent with persistent graph memory**. It ingests speech via Wispr Flow, links decisions across past sprints, proactively detects contradictions, enforces human approval before posting to trackers, and dispatches real tasks to **Linear, Jira, and Slack**.
-
----
-
-## 🎬 3-Minute Demo Video Script (Winning Walkthrough Guide)
-
-| Time | Segment | What to Show on Screen | What to Say (Script) |
-| :--- | :--- | :--- | :--- |
-| **0:00 – 0:40** | **The Problem & Product Thinking** | Open **Sprint 16 Ingestion Stream** | *"Meeting notes are passive. If an engineer silently shifts the database from Postgres to MongoDB, Jira tickets get filed anyway, SLAs break, and standard AI summarizers don't catch it. We built SyncPulse AI — a voice-first agent with persistent cross-sprint memory."* |
-| **0:40 – 1:30** | **Wispr Flow Voice Ingestion & Memory** | Click **"Wispr Voice Console"** or `+ Stream Voice Note` | *"We dictate our updates directly using Wispr Flow. Notice how it strips conversational disfluencies like 'um', 'like', and 'wait strike that' in real-time, outputting structured execution data. Now watch SyncPulse cross-reference this against our Sprint 14 baseline."* |
-| **1:30 – 2:20** | **Contradiction Gate & Human Override** | Click **Conflict Intelligence** tab | *"Boom — SyncPulse catches 3 critical contradictions: PostgreSQL vs MongoDB, a 13-day launch delay, and orphaned SOC2 ownership. As PM, I click 'Synthesize Compromise' to enforce an objective benchmark. Watch the conflict counter decrement live from 3 to 2!"* |
-| **2:20 – 3:00** | **Execution & Live API Dispatch** | Click **Execution Staging** $\to$ **Confirm & Sync** | *"Instead of bot spam, our human-in-the-loop gate lets me review assignees and click Confirm. Confetti fires, and look at our Live Agent Action Console — actual POST payloads dispatched to Linear, Jira, and Slack with 200 OK responses!"* |
 
 ---
 
@@ -57,13 +62,14 @@ graph TD
 ### 3. 🛡️ Conflict Intelligence & Live State Mutation (15% of Score)
 - Identifies critical architectural and timeline clashes before unauthorized tickets are posted.
 - **Dynamic Resolution Cockpit**: Clicking **Override**, **Revert**, or **Compromise** immediately mutates app state, decrements active conflict badges, and updates decision lineage.
+- **Interactive Semantic Diff Slider**: Drag between the locked Sprint 14 baseline and Sprint 16 unapproved proposal.
 
 ### 4. ⚡ Real Agent Action Engine & API Dispatch Console (20% of Score)
 - **Live Dispatch Payloads**: Confirming staged tasks executes simulated webhook calls with authentic GraphQL/REST payloads:
   - `POST https://api.linear.app/graphql - 200 OK (142ms)`
   - `POST https://pulsecorp.atlassian.net/rest/api/3/issue - 200 OK (189ms)`
   - `POST https://hooks.slack.com/services/... - 200 OK (84ms)`
-- Interactive slide-over console displaying request JSON, headers, and server responses.
+- **Pixel-Perfect Linear Issue Modal**: Inspect issues with Linear's native UI, priority flags, and automated audit history.
 
 ### 5. 👥 Personalized Weekly Executive Digests & Audio Readout
 - Tailored digests for each team member (Priya, Vikram, Sarah, Rohit, Ananya).
@@ -93,6 +99,7 @@ npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
+Click **"🎬 3-Min Tour"** in the top navigation bar to run the guided walkthrough directly inside the web app!
 
 ---
 

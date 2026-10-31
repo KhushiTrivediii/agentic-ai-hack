@@ -10,6 +10,7 @@ import { VoiceWisprInputModal } from './components/VoiceWisprInputModal';
 import { LinkedInSubmissionModal } from './components/LinkedInSubmissionModal';
 import { CommandPalette } from './components/CommandPalette';
 import { JudgeRubricModal } from './components/JudgeRubricModal';
+import { AutoDemoPresenter } from './components/AutoDemoPresenter';
 import { ApiDispatchConsole, ApiLog } from './components/ApiDispatchConsole';
 import { SEED_MEETINGS, SEED_SPEAKERS, SEED_REMINDERS, WISPR_SAMPLE_VOICE_MEMOS } from './data/seedData';
 import { Meeting, ActionItem, Conflict, Decision, Reminder } from './types';
@@ -26,6 +27,7 @@ export function App() {
   const [isLinkedInModalOpen, setIsLinkedInModalOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isJudgeRubricOpen, setIsJudgeRubricOpen] = useState(false);
+  const [isAutoDemoOpen, setIsAutoDemoOpen] = useState(false);
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -376,6 +378,7 @@ export function App() {
         openLinkedInModal={() => setIsLinkedInModalOpen(true)}
         openCommandPalette={() => setIsCommandPaletteOpen(true)}
         openJudgeRubricModal={() => setIsJudgeRubricOpen(true)}
+        openAutoDemo={() => setIsAutoDemoOpen(true)}
         unresolvedConflictCount={unresolvedConflictCount}
         pendingTaskCount={pendingTaskCount}
         onResetDemo={handleResetDemo}
@@ -384,7 +387,7 @@ export function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-28">
         {activeTab === 'ingestion' && (
           <MeetingIngestion
             currentMeeting={currentMeeting}
@@ -446,6 +449,32 @@ export function App() {
         onClear={() => setApiLogs([])}
       />
 
+      {/* 3-Minute Automated Video Demo Tour Presenter */}
+      <AutoDemoPresenter
+        isOpen={isAutoDemoOpen}
+        onClose={() => setIsAutoDemoOpen(false)}
+        onNavigateTab={(tabId) => setActiveTab(tabId)}
+        openVoiceModal={() => setIsVoiceModalOpen(true)}
+        closeVoiceModal={() => setIsVoiceModalOpen(false)}
+        onResolveFirstConflict={() => {
+          if (allConflicts.length > 0) {
+            handleResolveConflict(
+              allConflicts[0].id,
+              'compromise_accepted',
+              'Synthesized Compromise: Benchmarking pgvector on Postgres AWS RDS vs MongoDB Atlas with 60ms latency gate.'
+            );
+          }
+        }}
+        onConfirmStagedTasks={() => {
+          const pendingIds = allActionItems
+            .filter((a) => a.status === 'pending_confirmation')
+            .map((a) => a.id);
+          if (pendingIds.length > 0) {
+            handleConfirmTasks(pendingIds);
+          }
+        }}
+      />
+
       {/* Modals & Command Palette */}
       <CommandPalette
         isOpen={isCommandPaletteOpen}
@@ -481,6 +510,12 @@ export function App() {
           </div>
           <div className="flex items-center gap-4">
             <button
+              onClick={() => setIsAutoDemoOpen(true)}
+              className="text-emerald-400 hover:text-emerald-300 font-bold cursor-pointer"
+            >
+              Launch 3-Min Tour
+            </button>
+            <button
               onClick={() => setIsJudgeRubricOpen(true)}
               className="text-amber-400 hover:text-amber-300 font-semibold cursor-pointer"
             >
@@ -498,14 +533,6 @@ export function App() {
             >
               LinkedIn Bonus Templates (+10)
             </button>
-            <a
-              href="https://theproductspace.in/ai-hackathon-details"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-slate-300 transition-colors"
-            >
-              Hackathon Details
-            </a>
           </div>
         </div>
       </footer>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mic, ShieldAlert, Cpu, Share2, Workflow, Bell, ListTodo, Layers, RefreshCw, Search, Volume2, VolumeX, Award } from 'lucide-react';
+import { Mic, ShieldAlert, Cpu, Share2, Workflow, Bell, ListTodo, Layers, RefreshCw, Search, Volume2, VolumeX, Award, Video } from 'lucide-react';
 import { sfx } from '../utils/audio';
 
 interface NavbarProps {
@@ -9,6 +9,7 @@ interface NavbarProps {
   openLinkedInModal: () => void;
   openCommandPalette: () => void;
   openJudgeRubricModal: () => void;
+  openAutoDemo: () => void;
   unresolvedConflictCount: number;
   pendingTaskCount: number;
   onResetDemo: () => void;
@@ -23,6 +24,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   openLinkedInModal,
   openCommandPalette,
   openJudgeRubricModal,
+  openAutoDemo,
   unresolvedConflictCount,
   pendingTaskCount,
   onResetDemo,
@@ -139,17 +141,30 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2">
+            {/* 3-Minute Automated Video Demo Tour Trigger */}
+            <button
+              onClick={() => {
+                sfx.playSuccess();
+                openAutoDemo();
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/30 transition-all cursor-pointer hover:scale-105 pulse-glow"
+              title="Launch 3-Minute Video Walkthrough Tour"
+            >
+              <Video className="w-3.5 h-3.5 text-amber-300" />
+              <span>3-Min Tour</span>
+            </button>
+
             {/* Judge 100/100 Rubric Verification Button */}
             <button
               onClick={() => {
                 sfx.playClick();
                 openJudgeRubricModal();
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 transition-all cursor-pointer"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 transition-all cursor-pointer"
               title="Inspect 100/100 Rubric Proof"
             >
               <Award className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden sm:inline">100/100 Rubric</span>
+              <span>100/100</span>
             </button>
 
             {/* Sound FX Toggle */}
@@ -171,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 sfx.playClick();
                 openVoiceModal();
               }}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-indigo-700 hover:from-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-violet-600/30 transition-all cursor-pointer pulse-glow hover:scale-105"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-indigo-700 hover:from-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-violet-600/30 transition-all cursor-pointer hover:scale-105"
             >
               <Mic className="w-4 h-4 text-amber-300 animate-pulse" />
               <span className="hidden sm:inline">Wispr Voice</span>
