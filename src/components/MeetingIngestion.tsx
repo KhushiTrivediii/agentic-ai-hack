@@ -11,6 +11,7 @@ interface MeetingIngestionProps {
   goToConflicts: () => void;
   goToStaging: () => void;
   isAnalyzing: boolean;
+  onQuickInjectWisprNote: () => void;
 }
 
 export const MeetingIngestion: React.FC<MeetingIngestionProps> = ({
@@ -21,6 +22,7 @@ export const MeetingIngestion: React.FC<MeetingIngestionProps> = ({
   goToConflicts,
   goToStaging,
   isAnalyzing,
+  onQuickInjectWisprNote,
 }) => {
   const [customTranscript, setCustomTranscript] = useState(currentMeeting.rawTranscript);
   const [meetingTitle, setMeetingTitle] = useState(currentMeeting.title);
@@ -69,8 +71,9 @@ export const MeetingIngestion: React.FC<MeetingIngestionProps> = ({
               className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-violet-600/30 transition-all cursor-pointer pulse-glow hover:scale-105"
             >
               <Mic className="w-4 h-4 text-amber-300 animate-pulse" />
-              <span>Dictate with Wispr Flow</span>
+              <span>Wispr Voice Console</span>
             </button>
+
             <button
               onClick={handleRunAnalysis}
               disabled={isAnalyzing}
@@ -140,13 +143,23 @@ export const MeetingIngestion: React.FC<MeetingIngestionProps> = ({
                 <FileText className="w-4 h-4 text-indigo-400" />
                 <h3 className="font-bold text-sm text-white">Meeting Ingestion Stream</h3>
               </div>
-              <button
-                onClick={handleCopyTranscript}
-                className="text-[11px] text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-1 cursor-pointer"
-              >
-                {copiedTranscript ? <Check className="w-3 h-3 text-emerald-400" /> : null}
-                <span>{copiedTranscript ? 'Copied' : 'Copy Text'}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onQuickInjectWisprNote}
+                  className="px-2.5 py-1 rounded-lg bg-violet-600/30 border border-violet-500/40 text-violet-300 font-bold text-[11px] flex items-center gap-1 cursor-pointer hover:bg-violet-600/50 transition-colors"
+                  title="Simulate Ingesting Live Wispr Voice Memo"
+                >
+                  <Zap className="w-3 h-3 text-amber-300" />
+                  <span>+ Stream Voice Note</span>
+                </button>
+                <button
+                  onClick={handleCopyTranscript}
+                  className="text-[11px] text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  {copiedTranscript ? <Check className="w-3 h-3 text-emerald-400" /> : null}
+                  <span>{copiedTranscript ? 'Copied' : 'Copy'}</span>
+                </button>
+              </div>
             </div>
 
             <div className="space-y-3.5">
@@ -183,7 +196,7 @@ export const MeetingIngestion: React.FC<MeetingIngestionProps> = ({
                   className="flex items-center gap-1.5 text-xs text-violet-400 hover:text-violet-300 font-bold transition-colors cursor-pointer"
                 >
                   <Mic className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Insert Wispr Voice Note</span>
+                  <span>Wispr Disfluency Stripper</span>
                 </button>
                 <button
                   onClick={handleRunAnalysis}
